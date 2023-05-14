@@ -1,11 +1,13 @@
 ﻿using KlitechHF.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,7 +16,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+
+
 
 namespace KlitechHF
 {
@@ -27,18 +30,27 @@ namespace KlitechHF
         {
             this.InitializeComponent();
 
-            PagePerson = new Person()
+            PagePerson = new Person() { Name = "John Wick", Age = 44 };
+
+            People = new ObservableCollection<Person>()
             {
-                Name = "John",
-                Age = 44
+             new Person() { Name = "Peter Griffin", Age = 40 },
+             new Person() { Name = "Homer Simpson", Age = 42 },
             };
 
-            DataContext = PagePerson;
+            DataContext = this;
         }
 
-
         public Person PagePerson { get; set; }
+        
+        public ObservableCollection<Person> People { get; set; }
 
+
+        private void RecordButton_Click(object sender, RoutedEventArgs e)
+        {
+            var person = new Person() { Name = PagePerson.Name, Age = PagePerson.Age };
+            People.Add(person);
+        }
 
 
         private void DecreaseButton_Click(object Sender, RoutedEventArgs e)
@@ -51,5 +63,13 @@ namespace KlitechHF
         {
             PagePerson.Age += 1;
         }
+
+
+        private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
+        {
+            var person = (Person)e.ClickedItem;
+            new MessageDialog($"Name={person.Name} Age={person.Age}").ShowAsync();
+        }
+
     }
 }
