@@ -1,0 +1,43 @@
+﻿<Page
+    x:Class="KlitechHF.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:KlitechHF.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="using:KlitechHF.ViewModels"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.DataContext>
+        <vm:MainPageViewModel x:Name="ViewModel" />
+    </Page.DataContext>
+
+    <StackPanel Orientation="Vertical" Background="Gray">
+        
+        <Button Margin="30,30,0,0" Click="RecordButton_Click">
+            <StackPanel Orientation="Horizontal">
+                <Ellipse Width="10" Height="10" Fill="Red" />
+                <TextBlock Text="Record" Margin="10,0,0,0" />
+            </StackPanel>
+        </Button>
+
+        <StackPanel Orientation="Horizontal">
+            <ComboBox x:Name="TranslateLanguageFromDropdown" MaxDropDownHeight="200" SelectionChanged="LanguageFrom_SelectionChanged"></ComboBox>
+            <Button x:Name="TranslateDirection" Width="30" Height="30" Margin="0,0,10,0"></Button>
+            <ComboBox x:Name="TranslateLanguageToDropdown" MaxDropDownHeight="200"></ComboBox>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal">
+            <TextBox PlaceholderText="Enter text here" Text="{Binding TextToTranslate, Mode=TwoWay}" Width="200" />
+            <Button Click="TranslateButton_Click">Translate</Button>
+            <Button>Synonyms</Button>
+        </StackPanel>
+
+        <TextBlock x:Name="Output" Text="{Binding Output, Mode=TwoWay}" />
+
+    </StackPanel>
+    
+
+
+</Page>
