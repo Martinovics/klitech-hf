@@ -121,6 +121,7 @@
     </Compile>
     <Compile Include="Interfaces\ISynonymService.cs" />
     <Compile Include="Interfaces\ITranslateService.cs" />
+    <Compile Include="Secrets\Secret.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

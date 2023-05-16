@@ -1,28 +1,11 @@
 ﻿using KlitechHF.Interfaces;
-using KlitechHF.Models;
 using KlitechHF.Services;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Globalization;
-using Windows.UI.Popups;
+using Windows.UI.WindowManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-
-
+using Windows.UI.ViewManagement;
+using Windows.ApplicationModel.Core;
 
 namespace KlitechHF.Views
 {
@@ -35,8 +18,12 @@ namespace KlitechHF.Views
         {
             this.InitializeComponent();
             this.Loaded += MainPage_Loaded;
-        }
 
+            // app title
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.ExtendViewIntoTitleBar = false;
+            ApplicationView.GetForCurrentView().Title = "Szotar";
+        }
 
 
 
