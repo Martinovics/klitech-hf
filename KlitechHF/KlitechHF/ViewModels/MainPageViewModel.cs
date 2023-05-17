@@ -1,6 +1,5 @@
 ﻿using KlitechHF.Exceptions;
 using KlitechHF.Interfaces;
-using KlitechHF.Models;
 using KlitechHF.Services;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,9 +7,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Template10.Mvvm;
-using Windows.Globalization;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+
+
+
 
 namespace KlitechHF.ViewModels
 {
@@ -51,6 +50,7 @@ namespace KlitechHF.ViewModels
             }
         }
 
+
         public string OutputTitle
         {
             get { return _outputTitle; } 
@@ -63,6 +63,7 @@ namespace KlitechHF.ViewModels
                 }
             } 
         }
+
 
         public string OutputMessage
         {
@@ -80,9 +81,18 @@ namespace KlitechHF.ViewModels
 
 
 
-        public async Task SetSupportedLanguagesAsync()
+        /// <summary>
+        /// Sets the supported languages and stores them in a property
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> SetSupportedLanguagesAsync()
         {
             var languages = await _translateService.GetSupportedLanguagePairsAsync();
+            if (!languages.Any())
+            {
+                return false;
+            }
+
             foreach (var langPair in languages)
             {
                 if (langPair.Count(c => c == '-') == 1)
@@ -104,14 +114,21 @@ namespace KlitechHF.ViewModels
                 }
             }
             Debug.WriteLine($"Set supported languages. LanguageFrom count={SupportedLanguages.Count}");
+            return true;
         }
 
 
 
 
+        /// <summary>
+        /// Gets the synonyms for the input word
+        /// </summary>
+        /// <param name="languageFrom"></param>
+        /// <param name="languageTo"></param>
+        /// <returns>void | Sets the output on the UI</returns>
         public async Task GetTranslationAsync(string languageFrom, string languageTo)
         {
-            if (!isWordValid())
+            if (!IsWordValid())
                 return;
 
 
@@ -130,9 +147,14 @@ namespace KlitechHF.ViewModels
 
 
 
+        /// <summary>
+        /// Gets the synonyms for the input word
+        /// </summary>
+        /// <param name="languageFrom"></param>
+        /// <returns>void | Sets the output on the UI</returns>
         public async Task GetSynonymsAsync(string languageFrom)
         {
-            if (!isWordValid())
+            if (!IsWordValid())
                 return;
 
 
@@ -162,7 +184,13 @@ namespace KlitechHF.ViewModels
         }
 
 
-        private bool isWordValid()
+
+
+        /// <summary>
+        /// Checks that the input word is valid (not null or empty)
+        /// </summary>
+        /// <returns>bool</returns>
+        private bool IsWordValid()
         {
             if (string.IsNullOrEmpty(InputWord))
             {
@@ -173,6 +201,5 @@ namespace KlitechHF.ViewModels
 
             return true;
         }
-
     }
 }

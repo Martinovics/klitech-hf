@@ -21,11 +21,11 @@ namespace KlitechHF.Services
 
 
         /// <summary>
-        /// 
+        /// Gets the synonyms for a given word in a given language
         /// </summary>
         /// <param name="word"></param>
         /// <param name="language"></param>
-        /// <returns></returns>
+        /// <returns>Collection of strings</returns>
         /// <exception cref="InvalidLanguageException"></exception>
         public async Task<ICollection<string>> GetSynonymsAsync(string word, string language)
         {
@@ -60,11 +60,13 @@ namespace KlitechHF.Services
 
 
 
+        /// <summary>
+        /// Corrects the input language to a valid form which the api can understand (en -> en_US, de -> de_DE ...)
+        /// </summary>
+        /// <param name="language"></param>
+        /// <returns>Corrected language string</returns>
         private string CorrectLanguage(string language)
         {
-            // vagy 2 betus nyelvet varunk es akkor kijavitjuk | en --> en_US
-            // vagy eleve jo
-
             string[] validLanguages = { "cs_CZ", "da_DK", "de_CH", "de_DE", "en_US", "el_GR", "es_ES", "fr_FR", "hu_HU", "it_IT", "no_NO", "pl_PL", "pt_PT", "ro_RO", "ru_RU", "sk_SK" };
             foreach (var lang in validLanguages)
             {
@@ -80,6 +82,12 @@ namespace KlitechHF.Services
 
 
 
+        /// <summary>
+        /// Helper method for sending the request
+        /// </summary>
+        /// <param name="word"></param>
+        /// <param name="language"></param>
+        /// <returns>T</returns>
         private async Task<Synonyms> GetSynonymsResponseAsync(string word, string language)
         {
             var endpoint = new Uri($"{_baseUrl}");
@@ -93,6 +101,5 @@ namespace KlitechHF.Services
 
             return await HttpService.GetTAsync<Synonyms>(endpoint, queryParams);
         }
-
     }
 }

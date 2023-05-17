@@ -12,6 +12,12 @@ namespace KlitechHF.Services
 {
     public static class HttpService
     {
+        /// <summary>
+        /// Requests an endpoint without query params
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="uri"></param>
+        /// <returns>T result</returns>
         public static async Task<T> GetTAsync<T>(Uri uri)
         {
             using (var client = new HttpClient())
@@ -26,6 +32,15 @@ namespace KlitechHF.Services
         }
 
 
+
+
+        /// <summary>
+        /// Requests an endpoint with query params
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="uri"></param>
+        /// <param name="queryParams">Key-value pairs</param>
+        /// <returns>T result</returns>
         public static async Task<T> GetTAsync<T>(Uri uri, Dictionary<string, string> queryParams)
         {
             using (var client = new HttpClient())
@@ -40,6 +55,14 @@ namespace KlitechHF.Services
         }
 
 
+
+
+        /// <summary>
+        /// Attaches the query params to the uri
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="queryParams">Key-value pairs</param>
+        /// <returns>Uri with query params</returns>
         private static Uri QueriedUri(Uri uri, Dictionary<string, string> queryParams)
         {
             if (queryParams.Count == 0)

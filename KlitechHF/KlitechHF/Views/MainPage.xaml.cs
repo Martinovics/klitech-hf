@@ -1,18 +1,14 @@
-﻿using KlitechHF.Interfaces;
-using KlitechHF.Services;
-using System.Diagnostics;
-using Windows.UI.WindowManagement;
+﻿using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.ViewManagement;
 using Windows.ApplicationModel.Core;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace KlitechHF.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
     public sealed partial class MainPage : Page
     {
         public MainPage()
@@ -29,6 +25,9 @@ namespace KlitechHF.Views
 
 
 
+        /// <summary>
+        /// Updates the 'languages from' UI dropdown
+        /// </summary>
         private void UpdateLanguageFrom()
         {
             TranslateLanguageFromDropdown.Items.Clear();
@@ -48,6 +47,11 @@ namespace KlitechHF.Views
 
 
 
+
+        /// <summary>
+        /// Updates the 'languages to' UI dropdown
+        /// </summary>
+        /// <param name="languageFrom"></param>
         private void UpdateLanguageTo(string languageFrom = "en")
         {
             TranslateLanguageToDropdown.Items.Clear();
@@ -77,6 +81,12 @@ namespace KlitechHF.Views
 
 
 
+
+        /// <summary>
+        /// 'Language from' dropdown click listener
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void LanguageFrom_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
@@ -90,6 +100,11 @@ namespace KlitechHF.Views
 
 
 
+        /// <summary>
+        /// Gets the translations for the input word
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public async void TranslateButton_Click(object sender, RoutedEventArgs e)
         {
             if (!(TranslateLanguageFromDropdown?.SelectedItem is ComboBoxItem languageFrom))
@@ -109,6 +124,11 @@ namespace KlitechHF.Views
 
 
 
+        /// <summary>
+        /// Gets the synonyms for the given word
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public async void SynonymButton_Click(object sender, RoutedEventArgs e)
         {
             if (!(TranslateLanguageFromDropdown?.SelectedItem is ComboBoxItem languageFrom))
@@ -123,14 +143,24 @@ namespace KlitechHF.Views
 
 
 
+        /// <summary>
+        /// Fires when the view is loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            await ViewModel.SetSupportedLanguagesAsync();  // TODO check if successful
+            int maxTries = 10;
+            for (int i = 1; i <= maxTries; i++)
+            {
+                if (await ViewModel.SetSupportedLanguagesAsync())
+                    break;
+                Debug.WriteLine($"Could not get supported languages. Try {i}/{maxTries}");
+                Thread.Sleep(10000);
+            }
+
             UpdateLanguageFrom();
             UpdateLanguageTo();
         }
-
-
-
     }
 }
