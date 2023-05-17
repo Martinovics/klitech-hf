@@ -11,15 +11,14 @@ using Windows.Media.Casting;
 
 namespace KlitechHF.Services
 {
-    public class YandexApiService : ITranslateService, ISynonymService
+    public class YandexApiService : ITranslateService
     {
         private readonly string baseUrl = "https://dictionary.yandex.net/api/v1/dicservice.json";
 
-        private string _lastLookedUpWord = "";
-        private YandexApiLookupModel _lastLookedUpWordModel = new YandexApiLookupModel();
 
 
-        public async Task<IEnumerable<string>> GetSupportedLanguages()
+
+        public async Task<ICollection<string>> GetSupportedLanguagePairsAsync()
         {
             var endpoint = new Uri($"{baseUrl}/getLangs");
             var query = new Dictionary<string, string>()
@@ -27,55 +26,40 @@ namespace KlitechHF.Services
                 ["key"] = Secret.yandexApiKey,
             };
 
-            var resp = await HttpService.GetTAsync<List<string>>(endpoint, query);
-            // todo handle error
-
-            return resp;
-        }
-
-
-        public async Task<IEnumerable<string>> GetSynonyms(string word)
-        {
-            var synonyms = new List<string>();
-
-            if (_lastLookedUpWord == "")
+            var supportedLanguagePairs = new List<string>();  // en-de, en-es...
+            try
             {
-                Debug.WriteLine($"Nem sikerult lekerni a szinonimakat: {word}");
-                return synonyms;
+                supportedLanguagePairs = await HttpService.GetTAsync<List<string>>(endpoint, query);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
 
-
-            foreach (var def in _lastLookedUpWordModel.Def)
-            {
-                foreach (var tr in def.Tr)
-                {
-                    if (tr.Syn != null && tr.Text == word)
-                    {
-                        foreach (var syn in tr.Syn)
-                        {
-                            synonyms.Add(syn.Text);
-                        }
-                    }
-                }
-            }
-
-            return synonyms;
+            return supportedLanguagePairs;
         }
+
 
         
-        public async Task<IEnumerable<string>> Translate(string word, string fromLanguage, string toLanguage)
+
+        public async Task<ICollection<string>> GetTranslationAsync(string word, string fromLanguage, string toLanguage)
         {
             var translations = new List<string>();
 
-            bool success = await Lookup(word, fromLanguage, toLanguage);
-            if (!success)
+
+            YandexApiLookupModel resp;
+            try
             {
-                Debug.WriteLine($"Nem sikerult leforditani: {word}");
+                resp = await GetTranslationResponseAsync(word, fromLanguage, toLanguage);
+            }
+            catch (HttpRequestException ex)
+            {
+                Debug.WriteLine(ex.Message);
                 return translations;
             }
 
 
-            foreach (var def in _lastLookedUpWordModel.Def)
+            foreach (var def in resp.Def)
             {
                 foreach (var tr in def.Tr)
                 {
@@ -87,11 +71,10 @@ namespace KlitechHF.Services
         }
 
 
-        private async Task<bool> Lookup(string word, string fromLanguage, string toLanguage)
-        {
-            if (word == _lastLookedUpWord)  // mar megneztuk es eltaroltuk ezt a szot legutobb
-                return true;
 
+
+        private async Task<YandexApiLookupModel> GetTranslationResponseAsync(string word, string fromLanguage, string toLanguage)
+        {
             var endpoint = new Uri($"{baseUrl}/lookup");
             var query = new Dictionary<string, string>()
             {
@@ -99,22 +82,8 @@ namespace KlitechHF.Services
                 ["lang"] = $"{fromLanguage}-{toLanguage}",
                 ["text"] = word,
             };
-
-
-            YandexApiLookupModel lookupModel;
-            try
-            {
-                lookupModel = await HttpService.GetTAsync<YandexApiLookupModel>(endpoint, query);
-            }
-            catch (Exception ex)  // TODO: specifikusabb exception
-            {
-                Debug.WriteLine(ex.Message);
-                return false;
-            }
             
-            _lastLookedUpWord = word;
-            _lastLookedUpWordModel = lookupModel;
-            return true;
+            return await HttpService.GetTAsync<YandexApiLookupModel>(endpoint, query); ;
         }
     }
 }

@@ -17,6 +17,8 @@ namespace KlitechHF.Services
             using (var client = new HttpClient())
             {
                 var response = await client.GetAsync(uri);
+                response.EnsureSuccessStatusCode();
+                
                 var json = await response.Content.ReadAsStringAsync();
                 T result = JsonConvert.DeserializeObject<T>(json);
                 return result;
@@ -29,6 +31,8 @@ namespace KlitechHF.Services
             using (var client = new HttpClient())
             {
                 var response = await client.GetAsync(QueriedUri(uri, queryParams));
+                response.EnsureSuccessStatusCode();
+
                 var json = await response.Content.ReadAsStringAsync();
                 T result = JsonConvert.DeserializeObject<T>(json);
                 return result;

@@ -8,6 +8,6 @@ namespace KlitechHF.Interfaces
 {
     public interface ISynonymService
     {
-        Task<IEnumerable<string>> GetSynonyms(string word);
+        Task<ICollection<string>> GetSynonymsAsync(string word, string language);
     }
 }

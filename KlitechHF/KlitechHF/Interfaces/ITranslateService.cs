@@ -8,7 +8,7 @@ namespace KlitechHF.Interfaces
 {
     public interface ITranslateService
     {
-        Task<IEnumerable<string>> GetSupportedLanguages();
-        Task<IEnumerable<string>> Translate(string word, string fromLanguage, string toLanguage);
+        Task<ICollection<string>> GetSupportedLanguagePairsAsync();
+        Task<ICollection<string>> GetTranslationAsync(string word, string fromLanguage, string toLanguage);
     }
 }

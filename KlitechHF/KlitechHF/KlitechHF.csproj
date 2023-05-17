@@ -119,8 +119,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Exceptions\InvalidLanguageException.cs" />
     <Compile Include="Interfaces\ISynonymService.cs" />
     <Compile Include="Interfaces\ITranslateService.cs" />
+    <Compile Include="Models\ThesaurusApiModel.cs" />
+    <Compile Include="Services\TesaurusApiServices.cs" />
     <Compile Include="Secrets\Secret.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="Views\MainPage.xaml.cs">

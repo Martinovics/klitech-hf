@@ -6,6 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.ViewManagement;
 using Windows.ApplicationModel.Core;
+using System.Collections.Generic;
 
 namespace KlitechHF.Views
 {
@@ -28,36 +29,10 @@ namespace KlitechHF.Views
 
 
 
-        private async void RecordButton_Click(object sender, RoutedEventArgs e)
-        {
-            var yandexService = new YandexApiService();
-            ITranslateService translateService = yandexService;
-            ISynonymService synonymService = yandexService;
-
-
-
-            var translations = await translateService.Translate("economy", "en", "de");
-            foreach (var translation in translations)
-            {
-                Debug.Write(translation + " ");
-            }
-
-            Debug.WriteLine("");
-
-            var synonyms = await synonymService.GetSynonyms("Wirtschaft");
-            foreach (var syn in synonyms)
-            {
-                Debug.Write(syn + " ");
-            }
-        }
-
-
-
         private void UpdateLanguageFrom()
         {
             TranslateLanguageFromDropdown.Items.Clear();
-            var languages = ViewModel.GetSupportedLanguageFrom();
-            foreach (var lang in languages)
+            foreach (var lang in ViewModel.SupportedLanguages.Keys)
             {
                 TranslateLanguageFromDropdown.Items.Add(new ComboBoxItem
                 {
@@ -76,8 +51,18 @@ namespace KlitechHF.Views
         private void UpdateLanguageTo(string languageFrom = "en")
         {
             TranslateLanguageToDropdown.Items.Clear();
-            var languages = ViewModel.GetSupportedLanguageTo(languageFrom);
-            foreach (var lang in languages)
+            
+            try
+            {
+
+            }
+            catch (KeyNotFoundException)
+            {
+                Debug.WriteLine($"Could not update language to (invalid language from: {languageFrom})");
+                return;
+            }
+
+            foreach (var lang in ViewModel.SupportedLanguages[languageFrom])
             {
                 TranslateLanguageToDropdown.Items.Add(new ComboBoxItem
                 {
@@ -95,13 +80,13 @@ namespace KlitechHF.Views
         public void LanguageFrom_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = sender as ComboBox;
-            ComboBoxItem selectedItem = comboBox?.SelectedItem as ComboBoxItem;
-            if (selectedItem != null)
+            if (comboBox?.SelectedItem is ComboBoxItem selectedItem)
             {
                 string selectedLanguageFrom = selectedItem.Content.ToString();
                 UpdateLanguageTo(selectedLanguageFrom);
             }
         }
+
 
 
 
@@ -118,7 +103,21 @@ namespace KlitechHF.Views
                 return;
             }
 
-            await ViewModel.Translate(languageFrom.Content.ToString(), languageTo.Content.ToString());
+            await ViewModel.GetTranslationAsync(languageFrom.Content.ToString(), languageTo.Content.ToString());
+        }
+
+
+
+
+        public async void SynonymButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!(TranslateLanguageFromDropdown?.SelectedItem is ComboBoxItem languageFrom))
+            {
+                Debug.WriteLine("Could not get synonyms. languageFrom is null");
+                return;
+            }
+
+            await ViewModel.GetSynonymsAsync(languageFrom.Content.ToString());
         }
 
 

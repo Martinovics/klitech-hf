@@ -21,12 +21,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
-            <ComboBox x:Name="TranslateLanguageFromDropdown" MaxDropDownHeight="200" SelectionChanged="LanguageFrom_SelectionChanged"></ComboBox>
-            <Button x:Name="TranslateDirection" Width="30" Height="30" Margin="0,0,10,0"></Button>
+        <!-- language selection dropdowns -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,30">
+            <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">Translate from:</TextBlock>
+            <ComboBox x:Name="TranslateLanguageFromDropdown" MaxDropDownHeight="200" Margin="0,0,10,0" SelectionChanged="LanguageFrom_SelectionChanged"></ComboBox>
+            <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">to:</TextBlock>
             <ComboBox x:Name="TranslateLanguageToDropdown" MaxDropDownHeight="200"></ComboBox>
         </StackPanel>
 
+        <!-- Inputbox and buttons -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -34,12 +37,24 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" HorizontalAlignment="Stretch" PlaceholderText="Enter text here" Text="{Binding TextToTranslate, Mode=TwoWay}" />
-            <Button Grid.Column="1" Click="TranslateButton_Click">Translate</Button>
-            <Button Grid.Column="2">Synonyms</Button>
+            <TextBox Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10,0,5,15" PlaceholderText="Enter a word to translate"  Text="{Binding InputWord, Mode=TwoWay}" />
+            <Button Grid.Column="1" VerticalAlignment="Center" Margin="0,0,5,15" Click="TranslateButton_Click">Translate</Button>
+            <Button Grid.Column="2" VerticalAlignment="Center" Margin="0,0,10,15" Click="SynonymButton_Click">Synonyms</Button>
         </Grid>
 
-        <TextBlock Grid.Row="2" x:Name="Output" Text="{Binding Output, Mode=TwoWay}" />
+        <!-- Output box -->
+        <Border Grid.Row="2" Margin="10,0,10,10"  BorderBrush="DimGray" BorderThickness="3">
+            <ScrollViewer>
+                <RichTextBlock Margin="5,5,5,5" IsTextSelectionEnabled="True">
+                    <Paragraph>
+                        <Run Text="{Binding OutputTitle, Mode=OneWay}"/>
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="{Binding OutputMessage, Mode=OneWay}"/>
+                    </Paragraph>
+                </RichTextBlock>
+            </ScrollViewer>
+        </Border>
 
     </Grid>
 
