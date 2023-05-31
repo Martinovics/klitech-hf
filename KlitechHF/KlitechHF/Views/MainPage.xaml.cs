@@ -58,7 +58,13 @@ namespace KlitechHF.Views
             
             try
             {
-
+                foreach (var lang in ViewModel.SupportedLanguages[languageFrom])
+                {
+                    TranslateLanguageToDropdown.Items.Add(new ComboBoxItem
+                    {
+                        Content = lang,
+                    });
+                }
             }
             catch (KeyNotFoundException)
             {
@@ -66,13 +72,6 @@ namespace KlitechHF.Views
                 return;
             }
 
-            foreach (var lang in ViewModel.SupportedLanguages[languageFrom])
-            {
-                TranslateLanguageToDropdown.Items.Add(new ComboBoxItem
-                {
-                    Content = lang,
-                });
-            }
             if (0 < TranslateLanguageToDropdown.Items.Count)
             {
                 TranslateLanguageToDropdown.SelectedItem = TranslateLanguageToDropdown.Items[0];
