@@ -51,6 +51,9 @@ namespace KlitechHF.ViewModels
         }
 
 
+        /// <summary>
+        /// A UI felulet a kimeneti reszenek cimora.
+        /// </summary>
         public string OutputTitle
         {
             get { return _outputTitle; } 
@@ -65,6 +68,9 @@ namespace KlitechHF.ViewModels
         }
 
 
+        /// <summary>
+        /// A UI felulet a kimeneti reszenek tartalmi resze. 
+        /// </summary>
         public string OutputMessage
         {
             get { return _outputMessage; }
